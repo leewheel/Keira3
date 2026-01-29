@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalConfirmComponent } from './modal-confirm.component';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
@@ -13,12 +15,12 @@ class ModalConfirmComponentPage extends PageObject<ModalConfirmComponent> {
 }
 
 describe('ModalConfirmComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ModalConfirmComponent, TranslateTestingModule],
-      providers: [BsModalRef],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), BsModalRef],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const fixture = TestBed.createComponent(ModalConfirmComponent);

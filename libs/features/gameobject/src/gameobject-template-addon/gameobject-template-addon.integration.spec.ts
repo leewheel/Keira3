@@ -1,11 +1,12 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 import { EditorPageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { GameobjectTemplateAddon } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { GameobjectHandlerService } from '../gameobject-handler.service';
 import { SaiGameobjectHandlerService } from '../sai-gameobject-handler.service';
@@ -28,10 +29,9 @@ describe('GameobjectTemplateAddon integration tests', () => {
   const originalEntity = new GameobjectTemplateAddon();
   originalEntity.entry = id;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         ModalModule.forRoot(),
         GameobjectTemplateAddonComponent,
@@ -39,12 +39,14 @@ describe('GameobjectTemplateAddon integration tests', () => {
         TranslateTestingModule,
       ],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         GameobjectHandlerService,
         SaiGameobjectHandlerService,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup(creatingNew: boolean) {
     const handlerService = TestBed.inject(GameobjectHandlerService);
@@ -75,11 +77,11 @@ describe('GameobjectTemplateAddon integration tests', () => {
     it('should correctly update the unsaved status', () => {
       const { page, handlerService } = setup(true);
       const field = 'faction';
-      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved()).toBe(false);
       page.setInputValueById(field, 3);
-      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(true);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved()).toBe(true);
       page.setInputValueById(field, 0);
-      expect(handlerService.isGameobjectTemplateAddonUnsaved).toBe(false);
+      expect(handlerService.isGameobjectTemplateAddonUnsaved()).toBe(false);
     });
 
     it('changing a property and executing the query should correctly work', () => {
@@ -138,7 +140,7 @@ describe('GameobjectTemplateAddon integration tests', () => {
       page.expectFullQueryToContain('35');
     });
 
-    xit('changing a value via FlagsSelector should correctly work', waitForAsync(async () => {
+    xit('changing a value via FlagsSelector should correctly work', async () => {
       const { page } = setup(false);
       const field = 'flags';
       page.clickElement(page.getSelectorBtn(field));
@@ -164,6 +166,6 @@ describe('GameobjectTemplateAddon integration tests', () => {
           id +
           ', 0, 10, 0, 0, 0, 0, 0, 0);',
       );
-    }));
+    });
   });
 });

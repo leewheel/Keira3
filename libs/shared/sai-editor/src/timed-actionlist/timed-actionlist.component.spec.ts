@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { PageObject } from '@keira/shared/test-utils';
 import { SmartScripts } from '@keira/shared/acore-world-model';
@@ -20,18 +21,18 @@ class TestHostComponent {
 class TimedActionlistPage extends PageObject<TestHostComponent> {}
 
 describe('TimedActionlistComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NgxDatatableModule, TimedActionlistComponent, TestHostComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
     const host = fixture.componentInstance;
     const page = new TimedActionlistPage(fixture);
     const queryService = TestBed.inject(MysqlQueryService);
-    page.detectChanges();
     return { page, host, queryService };
   };
 
@@ -46,8 +47,8 @@ describe('TimedActionlistComponent', () => {
     spyOn(queryService, 'getTimedActionlists').and.returnValue(of(timedActionlists));
 
     host.creatureId = id;
-    host.child().ngOnChanges();
     page.detectChanges();
+    host.child().ngOnChanges();
 
     expect(page.getDatatableCell(0, 0).innerText).toContain(String(timedActionlists[0].entryorguid));
     expect(page.getDatatableCell(0, 1).innerText).toContain(String(timedActionlists[0].id));

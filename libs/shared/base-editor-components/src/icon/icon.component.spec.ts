@@ -1,5 +1,6 @@
-import { Component, viewChild } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { Component, viewChild, provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ICON_SKILLS } from '@keira/shared/constants';
 
 import { PageObject } from '@keira/shared/test-utils';
@@ -31,12 +32,16 @@ class IconComponentPage extends PageObject<TestHostComponent> {
 }
 
 describe('ItemIconComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [IconComponent, TestHostComponent],
-      providers: [{ provide: SqliteService, useValue: instance(mock(SqliteService)) }],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
+        { provide: SqliteService, useValue: instance(mock(SqliteService)) },
+      ],
     }).compileComponents();
-  }));
+  });
 
   const setup = () => {
     const fixture = TestBed.createComponent(TestHostComponent);
@@ -48,8 +53,6 @@ describe('ItemIconComponent', () => {
     spyOn(service, 'getIconByItemId').and.callFake((id) => of(`getIconByItemId-${id}`));
     spyOn(service, 'getIconByItemDisplayId').and.callFake((id) => of(`getIconByItemDisplayId-${id}`));
     spyOn(service, 'getIconBySpellId').and.callFake((id) => of(`getIconBySpellId-${id}`));
-
-    fixture.detectChanges();
 
     return { fixture, host, component, page, service };
   };

@@ -3,7 +3,7 @@
 //  - comments should be added to document what the code is actually doing
 //  - type errors should be fixed and any usage of "@ts-ignore" or "any" should be removed
 
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   FACTION_RANK,
   ITEM_FLAG,
@@ -16,10 +16,10 @@ import {
 } from '@keira/shared/acore-world-model';
 import { CLASSES_TEXT, RACES_TEXT } from '@keira/shared/constants';
 import { MysqlQueryService, SqliteQueryService } from '@keira/shared/db-layer';
-import { ITEM_CONSTANTS } from './item-constants';
-import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 import { PreviewHelperService } from '@keira/shared/preview';
 import { lastValueFrom } from 'rxjs';
+import { ITEM_CONSTANTS } from './item-constants';
+import { gtCombatRatings, lvlIndepRating, MAX_LEVEL, resistanceFields } from './item-preview';
 
 @Injectable({
   providedIn: 'root',
@@ -322,7 +322,7 @@ export class ItemPreviewService {
   }
 
   // todo (med): information will get lost if one vendor sells one item multiple times with different costs (e.g. for item 54637)
-  //             wowhead seems to have had the same issues
+  //             wowhead seems to have the same issues
   private async getExtendedCost(entry: number, flagsExtra: number, buyPrice: number): Promise<any[]> {
     if (!entry) {
       return [];
@@ -968,7 +968,7 @@ export class ItemPreviewService {
     const requiredFaction = itemTemplate.RequiredReputationFaction;
     const requiredFactionRank = itemTemplate.RequiredReputationRank;
     if (!!requiredFaction && requiredFaction > 0) {
-      let reqFaction = await this.sqliteQueryService.getFactionNameById(requiredFaction);
+      let reqFaction = await this.sqliteQueryService.getFactionNameByNameId(requiredFaction);
 
       /* istanbul ignore else */
       if (!!reqFaction) {
@@ -1412,5 +1412,11 @@ export class ItemPreviewService {
     }
 
     return tmpItemPreview;
+  }
+
+  async getNpcDisplayIdBySpell(spellId: number): Promise<number> {
+    const creatureId = await this.sqliteQueryService.getCreatureEntryByItemSpellId(spellId);
+    const creatureDisplayId = await this.mysqlQueryService.getCreatureDisplayIdById(creatureId);
+    return creatureDisplayId;
   }
 }

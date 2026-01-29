@@ -1,10 +1,11 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, provideZonelessChangeDetection, viewChild } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormGroup } from '@angular/forms';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SpellDbc } from '@keira/shared/acore-world-model';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { ModelForm } from '@keira/shared/utils';
-import { SpellDbc } from '@keira/shared/acore-world-model';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ToastrModule } from 'ngx-toastr';
@@ -36,7 +37,7 @@ describe('SpellDbcFlagsComponent', () => {
         TestHostComponent,
         SpellDbcFlagsComponent,
       ],
-      providers: [SpellHandlerService],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations(), SpellHandlerService],
     }).compileComponents();
   });
 
@@ -78,7 +79,7 @@ describe('SpellDbcFlagsComponent', () => {
     }
   });
 
-  it('should correctly display the values of the form', async () => {
+  it('should correctly display the values of the form', () => {
     const { page, form } = setup();
 
     for (const field of fields) {

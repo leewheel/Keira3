@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { MockHandlerService } from '@keira/shared/base-abstract-classes';
@@ -28,11 +30,12 @@ describe('CreateComponent', () => {
   const maxId = 12;
   const MAX_INT_UNSIGNED_VALUE = 4294967295;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [BrowserModule, FormsModule, TranslateTestingModule, CreateComponent],
+      providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const spyError = spyOn(console, 'error');
@@ -56,12 +59,12 @@ describe('CreateComponent', () => {
     return { component, fixture, page, spyError, MockedMysqlQueryService };
   }
 
-  it('should display the next id by default', waitForAsync(async () => {
+  it('should display the next id by default', async () => {
     const { fixture, page, component } = setup();
     await fixture.whenStable();
     expect(page.idInput.value).toEqual(`${maxId + 1}`);
     expect(component.loading).toBe(false);
-  }));
+  });
 
   it('should correctly toggle id free status the message', () => {
     const { page, component } = setup();

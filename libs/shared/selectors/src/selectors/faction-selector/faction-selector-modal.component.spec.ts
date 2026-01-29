@@ -1,4 +1,6 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { instance, mock } from 'ts-mockito';
 
@@ -8,16 +10,18 @@ import { FactionSearchService } from '../../search/faction-search.service';
 import { MysqlQueryService, SqliteService } from '@keira/shared/db-layer';
 
 describe('FactionSelectorModalComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [FactionSelectorModalComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         BsModalRef,
         { provide: SqliteService, useValue: instance(mock(SqliteService)) },
         { provide: MysqlQueryService, useValue: instance(mock(MysqlQueryService)) },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setup() {
     const searchService = TestBed.inject(FactionSearchService);

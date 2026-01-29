@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { PageObject, TranslateTestingModule } from '@keira/shared/test-utils';
 import { UnusedGuidSearchComponent } from './unused-guid-search.component';
@@ -26,17 +28,19 @@ class UnusedGuidSearchPage extends PageObject<UnusedGuidSearchComponent> {
 }
 
 describe('UnusedGuidSearchComponent', () => {
-  beforeEach(waitForAsync(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [UnusedGuidSearchComponent, TranslateTestingModule],
       providers: [
+        provideZonelessChangeDetection(),
+        provideNoopAnimations(),
         {
           provide: MysqlQueryService,
           useValue: { query: () => of([]) },
         },
       ],
     }).compileComponents();
-  }));
+  });
 
   function setupTest(mockGuids?: { guid: number }[]) {
     const fixture: ComponentFixture<UnusedGuidSearchComponent> = TestBed.createComponent(UnusedGuidSearchComponent);
