@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -107,8 +108,7 @@ describe('SidebarComponent', () => {
     page.clickElement(page.collapseAll);
 
     for (const key of Object.keys(component.menuStates)) {
-      // @ts-ignore
-      expect(component.menuStates[key]).toEqual('up');
+      expect(component.menuStates[key as keyof typeof component.menuStates]).toEqual('up');
     }
 
     page.removeNativeElement();
@@ -116,7 +116,7 @@ describe('SidebarComponent', () => {
 
   it('reload the app on logout', () => {
     const { page, component } = setup();
-    const reloadSpy = spyOn(TestBed.inject(LocationService), 'reload');
+    const reloadSpy = vi.spyOn(TestBed.inject(LocationService), 'reload').mockImplementation(() => undefined);
 
     component.logout();
 

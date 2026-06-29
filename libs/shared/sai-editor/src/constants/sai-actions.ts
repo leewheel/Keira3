@@ -181,6 +181,7 @@ export enum SAI_ACTIONS {
   DISABLE_REWARD = 238,
   SET_ANIM_TIER = 239,
   SET_GOSSIP_MENU = 240,
+  INC_DATA = 242,
 }
 export const SAI_ACTIONS_KEYS = getEnumKeys(SAI_ACTIONS);
 export const SAI_ACTION_TOOLTIPS: Record<string, string> = {};
@@ -211,10 +212,12 @@ SAI_ACTION_TOOLTIPS[SAI_ACTIONS.TALK] = 'Creature says a creature_text line';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.TALK] = 'GroupId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.TALK] = 'Duration';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.TALK] = 'Target';
+SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.TALK] = 'Delay';
 SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.TALK] = 'This is creature_text.GroupID';
 SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to wait before SMART_EVENT_TEXT_OVER event is triggered';
 SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.TALK] =
   '0 = Try to trigger talk of the target; ' + '1 = Set target as talk target (used for $vars in texts and whisper target)';
+SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.TALK] = 'Duration (milliseconds) to delay the Action';
 
 // SMART_ACTION_SET_FACTION
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_FACTION] = 'Set faction of target';
@@ -272,11 +275,8 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CAST] = 'SpellId';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.CAST] = 'CastFlags';
 SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.CAST] = 'TriggerFlags';
 SAI_ACTION_PARAM4_NAMES[SAI_ACTIONS.CAST] = 'LimitTargets';
-SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = `1 - Interrupt any spell casting;
-2 - Triggered (this makes spell cost zero mana and have no cast time);
-32 - Only casts the spell if the target does not have an aura from the spell;
-64 - Prevent combat movement on cast, allow on fail range, mana, LOS;
-128 - Only cast if the source's threatlist is higher than one. This includes pets`;
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.CAST] = 'Cannot be 0';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = Not triggered';
 SAI_ACTION_PARAM4_TOOLTIPS[SAI_ACTIONS.CAST] = '0 = all targets';
 
 // SMART_ACTION_SUMMON_CREATURE
@@ -428,17 +428,19 @@ SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.CALL_KILLEDMONSTER] = 'CreatureId';
 
 // SMART_ACTION_SET_INST_DATA
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] =
-  'Sets a certain instance data field to a specific value. ' +
-  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+  'Calls InstanceScript::SetData(field, data) or InstanceScript::SetBossState(field, EncounterState(data)) depending on type.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Field';
 SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Data';
+SAI_ACTION_PARAM3_NAMES[SAI_ACTIONS.SET_INST_DATA] = 'Type';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Instance data field id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = 'Value to set. If type is 1, this value is cast to `EncounterState`.';
+SAI_ACTION_PARAM3_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA] = '0 = call SetData(field, data); 1 = call SetBossState(field, EncounterState(data))';
 
 // SMART_ACTION_SET_INST_DATA64
-SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] =
-  'Sets a certain instance data field to a specific value. ' +
-  'This will be received and can be handled inside the InstanceScript of the instance we are sending this to (InstanceScripts are always written in C++).';
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Calls SetGuidData(field, guid) using the GUID from the first action target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Field';
-SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.SET_INST_DATA64] = 'Data';
+SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'Instance data field id';
+SAI_ACTION_PARAM2_TOOLTIPS[SAI_ACTIONS.SET_INST_DATA64] = 'The GUID is taken from the first action target.';
 
 // SMART_ACTION_UPDATE_TEMPLATE
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.UPDATE_TEMPLATE] =
@@ -1332,3 +1334,10 @@ SAI_ACTION_PARAM1_TOOLTIPS[SAI_ACTIONS.SET_ANIM_TIER] = '0 = Ground, 1 = Swim, 2
 // SMART_ACTION_SET_GOSSIP_MENU
 SAI_ACTION_TOOLTIPS[SAI_ACTIONS.SET_GOSSIP_MENU] = 'Modifies the gossip menu ID of the target.';
 SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.SET_GOSSIP_MENU] = 'GossipMenuId';
+
+// SMART_ACTION_INC_DATA
+SAI_ACTION_TOOLTIPS[SAI_ACTIONS.INC_DATA] =
+  "Increments the target's aiDataSet[field] by the given delta and fires SMART_EVENT_DATA_SET. " +
+  'Unlike SET_COUNTER, the value persists across evade and is only cleared on respawn/initialization.';
+SAI_ACTION_PARAM1_NAMES[SAI_ACTIONS.INC_DATA] = 'Field';
+SAI_ACTION_PARAM2_NAMES[SAI_ACTIONS.INC_DATA] = 'Increment';

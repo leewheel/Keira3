@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -6,23 +6,22 @@ import { ItemExtendedCostSelectorBtnComponent } from './item-extended-cost-selec
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('ItemExtendedCostSelectorBtnComponent', () => {
-  let component: ItemExtendedCostSelectorBtnComponent;
-  let fixture: ComponentFixture<ItemExtendedCostSelectorBtnComponent>;
-
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ModalModule.forRoot(), ItemExtendedCostSelectorBtnComponent],
+      imports: [ModalModule, ItemExtendedCostSelectorBtnComponent],
       providers: [provideZonelessChangeDetection(), provideNoopAnimations()],
     }).compileComponents();
   });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ItemExtendedCostSelectorBtnComponent);
-    component = fixture.componentInstance;
+  function setup() {
+    const fixture = TestBed.createComponent(ItemExtendedCostSelectorBtnComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+    return { fixture, component };
+  }
 
   it('should create', () => {
+    const { component } = setup();
     expect(component).toBeTruthy();
   });
 });

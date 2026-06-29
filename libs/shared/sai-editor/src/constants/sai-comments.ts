@@ -118,7 +118,7 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.RANDOM_PHASE] = `Set Random Phase (_actionRandom
 SAI_ACTION_COMMENTS[SAI_ACTIONS.RANDOM_PHASE_RANGE] = `Set Phase Random Between _actionParamOne_-_actionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.RESET_GOBJECT] = `Reset Gameobject`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.CALL_KILLEDMONSTER] = `Quest Credit '_questNameKillCredit_'`;
-SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_INST_DATA] = `Set Instance Data _actionParamOne_ to _actionParamTwo_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_INST_DATA] = `_instanceData_ _actionParamOne_ to _instDataParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_INST_DATA64] = `Set Instance Data _actionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.UPDATE_TEMPLATE] = `Update Template To '_creatureNameActionParamOne_'`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.DIE] = `Kill Self`;
@@ -256,3 +256,4 @@ SAI_ACTION_COMMENTS[SAI_ACTIONS.DISABLE_REWARD] =
   `Disable reward: Disable Reputation _onOffActionParamOne_, Disable Loot _onOffActionParamTwo_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_ANIM_TIER] = `Set AnimTier _actionParamOne_`;
 SAI_ACTION_COMMENTS[SAI_ACTIONS.SET_GOSSIP_MENU] = `Set Gossip ID _actionParamOne_`;
+SAI_ACTION_COMMENTS[SAI_ACTIONS.INC_DATA] = `Increment Field _actionParamOne_ By _actionParamTwo_`;
